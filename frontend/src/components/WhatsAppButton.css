@@ -1,0 +1,25 @@
+.whatsapp-button {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background-color: #25d366; /* WhatsApp green */
+  color: white;
+  border-radius: 50%;
+  width: 70px; /* Increased size */
+  height: 70px; /* Increased size */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 36px; /* Adjusted font size for balance */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000; /* Ensure it stays on top of other content */
+  text-decoration: none; /* Remove underline from anchor tag */
+}
+
+.whatsapp-button:hover {
+  background-color: #1da851; /* Darker green on hover */
+}
+
+.whatsapp-icon {
+  /* No specific styling needed here if using unicode character directly */
+}

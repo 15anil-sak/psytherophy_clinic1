@@ -1,0 +1,34 @@
+# Node.js
+node_modules/
+
+# dotenv environment variables file
+.env
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+logs/
+
+# Build artifacts
+dist/
+build/
+*.zip
+
+# Local files
+*.local
+
+# macOS
+.DS_Store
+
+# VSCode
+.vscode/
+
+# Other project-specific files
+backend.zip
+clinic_logo.webp
+pain.jpg
+pain1.jpg
+poster.jpeg

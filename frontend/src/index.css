@@ -1,0 +1,53 @@
+:root {
+  --primary-color: #1a237e; /* Deep Indigo/Navy Blue */
+  --secondary-color: #00bcd4; /* Light/Bright Teal or Aqua Blue */
+  --neutral-color-light: #f5f5f5; /* Light Gray */
+  --neutral-color-white: #ffffff; /* White */
+
+  --font-family-sans-serif: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family-sans-serif);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--neutral-color-white);
+  color: #333;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+a {
+  color: var(--secondary-color);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+button {
+  background-color: var(--primary-color);
+  color: var(--neutral-color-white);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #283593; /* Slightly lighter indigo */
+}
+
+.cta-button {
+    background-color: var(--primary-color);
+    color: var(--neutral-color-white);
+}
