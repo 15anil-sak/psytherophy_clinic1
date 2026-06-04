@@ -1,8 +1,8 @@
 const express = require('express');
 const cors = require('cors');
-require('dotenv').config();
+require('dotenv').config({ path: require('path').resolve(__dirname, '.env') });
 
-const db = require('./config/db');
+const connectDB = require('./config/db');
 
 const authRoutes = require('./routes/auth');
 const serviceRoutes = require('./routes/services');
@@ -11,6 +11,9 @@ const contactRoutes = require('./routes/contact');
 const blogRoutes = require('./routes/blogs');
 
 const app = express();
+
+// Connect to Database
+connectDB();
 
 // Middleware
 app.use(cors());
@@ -32,8 +35,3 @@ app.use('/api/blogs', blogRoutes);
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
-
-// Test DB connection
-db.execute('SELECT 1')
-  .then(() => console.log('MySQL connected...'))
-  .catch(err => console.log('DB Connection Error: ' + err.message));

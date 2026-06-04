@@ -1,39 +1,50 @@
-const db = require('../config/db');
+const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
-class User {
-  constructor(name, email, password, role = 'patient') {
-    this.name = name;
-    this.email = email;
-    this.password = password;
-    this.role = role;
+const userSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    role: {
+      type: String,
+      required: true,
+      enum: ['patient', 'admin'],
+      default: 'patient',
+    },
+  },
+  {
+    timestamps: true,
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+  }
+);
+
+// Match user entered password to hashed password in database
+userSchema.methods.matchPassword = async function (enteredPassword) {
+  return await bcrypt.compare(enteredPassword, this.password);
+};
+
+// Encrypt password using bcrypt
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) {
+    next();
   }
 
-  async save() {
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(this.password, salt);
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+});
 
-    const sql = 'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)';
-    const [result] = await db.execute(sql, [this.name, this.email, hashedPassword, this.role]);
-    this.id = result.insertId;
-    return this;
-  }
-
-  static async findByEmail(email) {
-    const sql = 'SELECT * FROM users WHERE email = ?';
-    const [rows] = await db.execute(sql, [email]);
-    return rows[0];
-  }
-
-  static async findById(id) {
-    const sql = 'SELECT * FROM users WHERE id = ?';
-    const [rows] = await db.execute(sql, [id]);
-    return rows[0];
-  }
-
-  static async comparePassword(candidatePassword, hashedPassword) {
-    return await bcrypt.compare(candidatePassword, hashedPassword);
-  }
-}
+const User = mongoose.model('User', userSchema);
 
 module.exports = User;

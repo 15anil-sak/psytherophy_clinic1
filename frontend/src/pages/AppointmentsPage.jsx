@@ -1,6 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { createAppointment, fetchServices } from '../services/api';
+import Modal from '../components/Modal';
 import './AppointmentsPage.css';
+
+const fallbackServices = [
+  { _id: '1', name: 'Orthopedic Physiotherapy' },
+  { _id: '2', name: 'Sports Injury Management' },
+  { _id: '3', name: 'Neurological Rehabilitation' },
+  { _id: '4', name: 'Post-Operative Recovery' },
+  { _id: '5', name: 'Chronic Pain Management' },
+  { _id: '6', name: 'Geriatric Physiotherapy' }
+];
 
 const AppointmentsPage = () => {
   const [newlyBookedAppointment, setNewlyBookedAppointment] = useState(null);
@@ -13,27 +23,32 @@ const AppointmentsPage = () => {
   const [mobileNumber, setMobileNumber] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     const getServices = async () => {
-        try {
-            const { data } = await fetchServices();
-            setServices(data);
-            if (data.length > 0) {
-                setServiceId(data[0].id);
-            }
-        } catch (error) {
-            console.error('Failed to fetch services:', error);
+      try {
+        const { data } = await fetchServices();
+        if (data && data.length > 0) {
+          setServices(data);
+          setServiceId(data[0]._id);
+        } else {
+          setServices(fallbackServices);
+          setServiceId(fallbackServices[0]._id);
         }
+      } catch (error) {
+        console.error('Failed to fetch services, using fallback:', error);
+        setServices(fallbackServices);
+        setServiceId(fallbackServices[0]._id);
+      }
     };
+    getServices();
 
     const userInfo = JSON.parse(localStorage.getItem('userInfo'));
     if (userInfo) {
       setPatientName(userInfo.name);
       setEmail(userInfo.email);
     }
-
-    getServices();
   }, []);
 
   const handleBookingConfirmation = async (e) => {
@@ -41,14 +56,7 @@ const AppointmentsPage = () => {
     setMessage('');
     setNewlyBookedAppointment(null);
 
-    const token = localStorage.getItem('userInfo')
-      ? JSON.parse(localStorage.getItem('userInfo')).token
-      : null;
-
-    if (!token) {
-      setMessage('You must be logged in to book an appointment.');
-      return;
-    }
+    // No token check as per user request to allow unauthenticated bookings
 
     if (mobileNumber.length !== 10) {
       setMessage('Please enter a valid 10-digit mobile number.');
@@ -57,7 +65,7 @@ const AppointmentsPage = () => {
 
     try {
       const appointmentData = {
-        service_id: parseInt(serviceId, 10),
+        service_id: serviceId,
         appointment_date: `${date} ${time}`,
         description: description,
         patient_name: patientName,
@@ -67,20 +75,16 @@ const AppointmentsPage = () => {
 
       const { data } = await createAppointment(appointmentData);
       setNewlyBookedAppointment(data);
-      setMessage('Appointment booked successfully!');
+      setShowModal(true);
     } catch (error) {
       console.error('Failed to book appointment:', error);
-      if (error.response) {
-        if (error.response.status === 401) {
-          setMessage('Your session has expired. Please log in again.');
-          window.location.href = '/login';
-        } else {
-          setMessage(`Booking failed: ${error.response.data.message || 'Please try again.'}`);
-        }
-      } else {
-        setMessage('An unexpected error occurred. Please try again.');
-      }
+      setMessage(`Booking failed: ${error.response?.data?.message || 'An unexpected error occurred. Please try again.'}`);
     }
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setNewlyBookedAppointment(null);
   };
 
   return (
@@ -127,7 +131,7 @@ const AppointmentsPage = () => {
               required
             >
               {services.map((service) => (
-                <option key={service.id} value={service.id}>
+                <option key={service._id} value={service._id}>
                   {service.name}
                 </option>
               ))}
@@ -168,17 +172,19 @@ const AppointmentsPage = () => {
       </div>
 
       {newlyBookedAppointment && (
-        <div className="appointments-list-container">
-          <h1>Your Appointment</h1>
-          <ul className="appointments-list">
-            <li className="appointment-item">
-              <h2>{newlyBookedAppointment.service_name}</h2>
-              <p>Patient: {newlyBookedAppointment.patient_name}</p>
-              <p>Date: {new Date(newlyBookedAppointment.appointment_date).toLocaleString()}</p>
-              <p>Status: {newlyBookedAppointment.status}</p>
-            </li>
-          </ul>
-        </div>
+        <Modal show={showModal} onClose={closeModal}>
+          <h2>Appointment Scheduled</h2>
+          <p>
+            <strong>Patient:</strong> {newlyBookedAppointment.patient_name}
+          </p>
+          <p>
+            <strong>Time:</strong>{' '}
+            {new Date(newlyBookedAppointment.appointment_date).toLocaleString()}
+          </p>
+          <button onClick={closeModal} className="cta-button">
+            OK
+          </button>
+        </Modal>
       )}
     </div>
   );

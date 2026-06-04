@@ -1,35 +1,58 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import './Header.css';
 
 const Header = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
+
   return (
     <header>
-      <Link to="/" className="logo-link">
+      <Link to="/" className="logo-link" onClick={closeMenu}>
         <div className="logo-container">
           <img src="/images/clinic_logo.webp" alt="Clinic Logo" />
-          <span className="logo-text">Teja's Physiotherapy and Pain Relief Clinic</span>
+          <span className="logo-text">Teja's Physiotherapy Clinic</span>
         </div>
       </Link>
-      <nav>
+
+      <div className="menu-icon" onClick={toggleMenu}>
+        <i className={isMenuOpen ? 'fas fa-times' : 'fas fa-bars'}></i>
+      </div>
+
+      <nav className={isMenuOpen ? 'nav-active' : ''}>
         <ul>
           <li>
-            <Link to="/">Home</Link>
+            <Link to="/" onClick={closeMenu}>Home</Link>
           </li>
           <li>
-            <Link to="/services">Services</Link>
+            <Link to="/services" onClick={closeMenu}>Services</Link>
           </li>
           <li>
-            <Link to="/contact">Contact</Link>
+            <Link to="/contact" onClick={closeMenu}>Contact</Link>
           </li>
           <li>
-            <Link to="/blogs">Blogs</Link>
+            <Link to="/blogs" onClick={closeMenu}>Blogs</Link>
+          </li>
+          <li className="mobile-only">
+            <Link to="/appointments" onClick={closeMenu}>
+              <button className="cta-button">Book Appointment</button>
+            </Link>
           </li>
         </ul>
       </nav>
-      <Link to="/appointments">
-        <button id="navBookBtn" className="cta-button">Book Appointment</button>
-      </Link>
+
+      <div className="desktop-only">
+        <Link to="/appointments">
+          <button id="navBookBtn" className="cta-button">Book Appointment</button>
+        </Link>
+      </div>
     </header>
   );
 };

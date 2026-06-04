@@ -1,8 +1,12 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  width: 100%;
+  margin: 0;
+  padding: 0;
   text-align: center;
+}
+
+main {
+  min-height: calc(100vh - 160px); /* Adjust based on header/footer height */
 }
 
 .logo {

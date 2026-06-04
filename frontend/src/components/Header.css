@@ -5,6 +5,16 @@ header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+header nav {
+  margin-left: auto;
+  /* Pushes nav to the right */
+  margin-right: 2rem;
+  /* Adds space between nav and the button */
 }
 
 header nav ul {
@@ -12,7 +22,8 @@ header nav ul {
   margin: 0;
   padding: 0;
   display: flex;
-  gap: 1.5rem;
+  gap: 2rem;
+  /* Increased gap for better spacing */
 }
 
 header nav a {
@@ -27,23 +38,80 @@ header nav a:hover {
 }
 
 .logo-container {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .logo-container img {
-    max-height: 60px; /* Adjust as needed */
-    vertical-align: middle;
-    margin-right: 0.5rem;
+  max-height: 40px;
+  /* Reduced for better fit */
+  vertical-align: middle;
+  margin-right: 0.5rem;
 }
 
 .logo-link {
-    text-decoration: none;
+  text-decoration: none;
 }
 
 .logo-text {
-    font-size: 1.5rem;
+    font-size: 1.8rem; /* Increased from 1.2rem */
     font-weight: bold;
-    color: var(--neutral-color-white); /* Ensure text is white */
-    text-decoration: none; /* Remove underline */
+    color: var(--neutral-color-white);
+    text-decoration: none;
+    white-space: nowrap; /* Prevent wrapping if possible */
+}
+
+.menu-icon {
+  display: none;
+  font-size: 2rem; /* Increased for better visibility */
+  cursor: pointer;
+}
+
+.mobile-only {
+  display: none;
+}
+
+@media screen and (max-width: 768px) {
+  header {
+    padding: 1rem;
+  }
+
+  .logo-text {
+    font-size: 1.3rem; /* Increased for mobile from 1rem */
+  }
+
+
+  .menu-icon {
+    display: block;
+  }
+
+  header nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: var(--primary-color);
+    flex-direction: column;
+    padding: 1rem 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  header nav.nav-active {
+    display: flex;
+  }
+
+  header nav ul {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .desktop-only {
+    display: none;
+  }
+
+  .mobile-only {
+    display: block;
+  }
 }

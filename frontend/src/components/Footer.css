@@ -1,7 +1,7 @@
 footer {
   background-color: var(--primary-color);
   color: var(--neutral-color-white);
-  padding: 2rem;
+  padding: 3rem 1.5rem;
   text-align: center;
 }
 
@@ -13,12 +13,24 @@ footer {
   margin: 0 auto;
 }
 
+.social-media {
+  display: flex;
+  gap: 1rem;
+}
+
 .social-media a {
   color: var(--neutral-color-white);
-  margin: 0 0.5rem;
   font-size: 1.5rem;
+  transition: color 0.3s ease;
 }
 
 .social-media a:hover {
   color: var(--secondary-color);
+}
+
+@media screen and (max-width: 768px) {
+  .footer-content {
+    flex-direction: column;
+    gap: 1.5rem;
+  }
 }
