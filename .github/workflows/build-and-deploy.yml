@@ -1,0 +1,55 @@
+name: Build and Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'npm'
+          cache-dependency-path: 'frontend/package-lock.json'
+
+      - name: Install dependencies
+        run: cd frontend && npm ci
+
+      - name: Build project
+        run: cd frontend && npm run build
+
+      - name: Copy build to docs
+        run: |
+          rm -rf docs/*
+          cp -r frontend/dist/* docs/
+
+      - name: Commit and push
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add docs/
+          git commit -m "Build: Update docs with latest frontend build" || exit 0
+          git push
+
+      - name: Verify GitHub Pages
+        run: |
+          echo "✅ Build complete! Your site will be deployed to GitHub Pages."
+          echo "📍 Visit: https://15anil-sak.github.io/psytherophy_clinic1/"
